@@ -34,12 +34,24 @@ export const FormulaItem: FC<FormulaItemProps> = ({
 	//bet this one took long time to develop
 	//``ಠ_ಠ``
 	const calculateExpression = (expression: string): number => {
-		const regex = /\[\[SUM\]\]\((\d+),\s*(\d+)\)/g;
-		expression = expression.replace(regex, (_, x: string, y: string) => (parseInt(x) + parseInt(y)).toString());
-		expression = expression.replace(/\[\[.*?\]\]\(.*?\)|\[\[.*?\]\]\{\{.*?\}\}/g, '');
-		return eval(expression);
-	};
+		const regex = /\[\[SUM\]\]\((.*?)\)/g;
+		expression = expression.replace(regex, (match: string, params: string) => {
+			const sum = params.split(',').reduce((acc, curr) => {
+				const num = parseInt(curr.trim());
+				return isNaN(num) ? acc : acc + num;
+			}, 0);
+			return sum.toString();
+		});
 
+		expression = expression.replace(/\[\[.*?\]\]\(.*?\)|\[\[.*?\]\]\{\{.*?\}\}/g, '');
+
+		try {
+			const result = eval(expression);
+			return isNaN(result) ? "Error" : result;
+		} catch (error) {
+			return 0;
+		}
+	};
 
 	const handleEnterKeyPress: KeyboardEventHandler<HTMLDivElement> = (event) => {
 		if (event.key === "Enter") {
