@@ -20,8 +20,7 @@ const wrapperClasses = [
   'bg-opacity-10',
   'text-gray-900',
   'border-gray-300',
-  'jss100',
-  'px-1',
+  'px-3',
   'py-0.5',
   'rounded',
 ];
@@ -44,11 +43,19 @@ class MacroPlaceholderWidget extends WidgetType {
 class InternalPlaceholderWidget extends WidgetType {
   value: string;
   functionValue: string;
+  insertPosition: {
+	x1: number;
+	x2: number;
+  }
 
   constructor(initValues: RegExpExecArray) {
     super();
     this.value = initValues[1];
     this.functionValue = initValues[2];
+	this.insertPosition = {
+		x1: 1,
+		x2: 2
+	}
   }
 
   toDOM(view: EditorView): HTMLElement {
@@ -62,12 +69,11 @@ class InternalPlaceholderWidget extends WidgetType {
     separator.classList.add(
       'w-0.5',
       'mx-2',
-	  'my-0',
+      'my-0',
       'inline-block',
-      'h-4',
+      'h-2',
       'bg-gray-900',
       'bg-opacity-30',
-      'jss29'
     );
 
     handler.addEventListener('click', (event) => {
@@ -81,6 +87,11 @@ class InternalPlaceholderWidget extends WidgetType {
 
     input.classList.add('w-16');
     input.value = this.functionValue;
+
+	input.addEventListener('mouseleave', (event) => {
+        wrapper.removeChild(input);
+        wrapper.appendChild(handler);
+	});
 
     input.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {

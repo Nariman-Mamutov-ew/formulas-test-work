@@ -1,5 +1,5 @@
 import { CompletionContext, CompletionResult } from '@codemirror/autocomplete';
-import { Tag } from '../client/getSuggestions';
+import { Tag } from '../../client/getSuggestions';
 
 const customComplitions =
   (tags: Array<Tag>) =>
@@ -21,7 +21,7 @@ const customComplitions =
             },
             ...tags.map((item) => ({
               label: item.name,
-              apply: `[[${item.name}]]`,
+              apply: `[[${item.name}]]{{x}}`,
             })),
           ],
         };

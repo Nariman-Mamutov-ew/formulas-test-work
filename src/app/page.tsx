@@ -1,20 +1,13 @@
 'use client';
 
-import React, { KeyboardEventHandler } from "react";
-import CodeMirror from '@uiw/react-codemirror';
-import { autocompletion } from '@codemirror/autocomplete';
+import React from "react";
+
 import { useStore } from './store';
+import { FormulaItem } from './FormulaInstance/FormulaItem';
 import { useGetSuggestions } from './client';
 
-import { customComplitions, macroPlaceholders, withInternalPlaceholders } from "./plugins";
-
 export default function Index() {
-	const formula = useStore();
-
-	const onChange = (val: string) => {
-		console.log(val);
-		formula.updateFormula(val);
-	};
+	const store = useStore();
 
 	const {
 		data,
@@ -23,61 +16,38 @@ export default function Index() {
 		isLoading
 	} = useGetSuggestions();
 
-	const handleEnterKeyPress: KeyboardEventHandler<HTMLDivElement> = (event) => {
-		if (event.key === "Enter") {
-			try {
-				//todo implement calculation function
-				event.preventDefault();
-			} catch (E) {
-				console.log(E);
-			}
-		}
-	}
+	const addNewFormula = () => {
+		store.addNewFormula();
+	};
 
 	return (
 		<div
-			style={{
-				padding: 20,
-			}}
+			className="p-12"
 		>
 			<div
-				style={{
-					width: "100%",
-				}}
+				className=" flex justify-between items-center"
 			>
-				{
-					data &&
-					<CodeMirror
-						width="100%"
-						height="30px"
-						minWidth="250px"
-						onChange={onChange}
-						value={formula.value}
-						indentWithTab={false}
-						aria-multiline={false}
-						aria-orientation="horizontal"
-						onKeyDown={handleEnterKeyPress}
-						extensions={[
-							macroPlaceholders,
-							withInternalPlaceholders,
-							autocompletion({
-								activateOnTyping: true,
-								override: [
-									customComplitions(data),
-								]
-							}),
-						]}
-						basicSetup={{
-							foldGutter: false,
-							lineNumbers: false,
-							autocompletion: true,
-							bracketMatching: true,
-							highlightActiveLine: false,
-							highlightActiveLineGutter: false,
-						}}
-					/>
-				}
+				<div
+					className="text-20"
+				>
+					Formulas
+				</div>
+				<button
+					className=""
+					onClick={addNewFormula}
+				>
+					Add Formula
+				</button>
 			</div>
+			{
+				store.formulas.map((item) =>
+					<FormulaItem
+						tags={data}
+						key={item.id}
+						formula={item}
+					/>
+				)
+			}
 		</div>
 	);
 
