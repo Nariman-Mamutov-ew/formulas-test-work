@@ -30,9 +30,11 @@ export const FormulaItem: FC<FormulaItemProps> = ({
 
 	const calculateExpression = (expression: string): number => {
 		const regex = /\[\[SUM\]\]\((\d+),\s*(\d+)\)/g;
-		expression = expression.replace(regex, (_, x: string, y: string) => (parseInt(x) + parseInt(y)).toString());
+		expression = expression.replace(regex, (match: string, x: string, y: string) => (parseInt(x) + parseInt(y)).toString());
+		expression = expression.replace(/\[\[.*?\]\]\(.*?\)|\[\[.*?\]\]\{\{.*?\}\}/g, '');
 		return eval(expression);
-	}
+	};
+
 
 	const handleEnterKeyPress: KeyboardEventHandler<HTMLDivElement> = (event) => {
 		if (event.key === "Enter") {
