@@ -28,9 +28,14 @@ export const FormulaItem: FC<FormulaItemProps> = ({
 		});
 	};
 
+	//todo
+	//this one needs to be refactored to 
+	//handle more complex expressions
+	//bet this one took long time to develop
+	//``ಠ_ಠ``
 	const calculateExpression = (expression: string): number => {
 		const regex = /\[\[SUM\]\]\((\d+),\s*(\d+)\)/g;
-		expression = expression.replace(regex, (match: string, x: string, y: string) => (parseInt(x) + parseInt(y)).toString());
+		expression = expression.replace(regex, (_, x: string, y: string) => (parseInt(x) + parseInt(y)).toString());
 		expression = expression.replace(/\[\[.*?\]\]\(.*?\)|\[\[.*?\]\]\{\{.*?\}\}/g, '');
 		return eval(expression);
 	};
